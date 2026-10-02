@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kiểm tra Hóa 10 – Cấu tạo nguyên tử</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#eef5ff;--card:#fff;--tx:#12263f;--pri:#1565d8;--pri2:#0b3f94;--ok:#16a34a;--bad:#dc2626;--line:#cfe0f7;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a2b;--card:#16263d;--tx:#e8f0fb;--line:#2a4468}}
+:root[data-theme="dark"]{--bg:#0e1a2b;--card:#16263d;--tx:#e8f0fb;--line:#2a4468}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:18px/1.55 system-ui,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:12px}
+.hero{background:linear-gradient(135deg,#1565d8,#0b3f94);color:#fff;border-radius:18px;padding:18px;text-align:center}
+.hero h1{margin:0;font-size:1.35rem;letter-spacing:.5px}.hero p{margin:4px 0 0;opacity:.92;font-size:.95rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+h2{margin:0 0 8px;font-size:1.15rem;color:var(--pri)}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input[type=text],input[type=password]{width:100%;font:inherit;padding:12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--tx)}
+input:focus{outline:none;border-color:var(--pri)}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:14px;font:inherit;font-weight:700;color:#fff;background:var(--pri);margin-top:14px;cursor:pointer}
+.btn.sec{background:#5b7aa8}.btn.red{background:var(--bad)}.btn.sm{display:inline-block;width:auto;padding:8px 14px;margin:4px 4px 0 0;font-size:.9rem}
+.qrbox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.qr{background:#fff;padding:10px;border-radius:12px;display:inline-block;min-height:60px}
+.small{font-size:.85rem;opacity:.8;word-break:break-all}
+.hide{display:none!important}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;background:var(--pri2);color:#fff;border-radius:12px;padding:10px 14px;font-weight:700}
+.bar.warn{background:var(--bad)}
+.part{background:var(--pri);color:#fff;border-radius:10px;padding:8px 12px;margin:18px 0 6px;font-weight:700}
+.q{margin-top:10px}.q .st{font-weight:600;margin-bottom:8px}
+.opt{display:block;padding:11px 12px;margin:6px 0;border:2px solid var(--line);border-radius:10px;cursor:pointer}
+.opt.sel{border-color:var(--pri);background:rgba(21,101,216,.14);font-weight:600}
+.opt input{display:none}
+.tf{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:6px 0;padding:8px 10px;border:2px solid var(--line);border-radius:10px}
+.tf .t{flex:1}.tf button{border:2px solid var(--line);background:var(--bg);color:var(--tx);font:inherit;font-weight:700;border-radius:8px;padding:6px 12px}
+.tf button.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.score{font-size:3rem;font-weight:800;color:var(--pri);text-align:center;line-height:1.1}
+table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:6px 5px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--pri)}
+.tw{overflow-x:auto}
+.gb{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:.95rem}.gb .n{width:84px}.gb .tr{flex:1;background:var(--bg);border-radius:6px;height:20px;overflow:hidden}.gb .f{height:100%;background:var(--pri)}.gb .v{width:78px;text-align:right}
+.rank-list{margin:0;padding:0;list-style:none}.rank-list li{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}.rank-list li:last-child{border-bottom:0}.rank-list .pos{font-weight:800;color:var(--pri);text-align:center}.rank-list .student{min-width:0}.rank-list .student b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rank-list .student small{opacity:.75}.rank-list .mark{font-weight:800;color:var(--pri2);white-space:nowrap}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.modal>div{background:var(--card);border-radius:16px;padding:20px;max-width:380px;width:100%}
+.row{display:flex;gap:10px}.row .btn{margin-top:14px}
+.requested-title{text-align:center;color:#0b3f94;margin:0 0 18px;padding:16px 14px;border:1px solid #cfe0f7;border-radius:16px;background:linear-gradient(135deg,#f7fbff,#e5efff);box-shadow:0 6px 18px rgba(11,63,148,.12);font-weight:700}
+.requested-title div:first-child{font-size:1.15rem;letter-spacing:.3px;background:linear-gradient(90deg,#0b3f94,#1565d8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.requested-title div:last-child{font-size:1.05rem;margin-top:5px;color:#0b3f94}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="requested-title"><div>Nguyễn Văn Quý - THPT QUANG TRUNG</div><div>ÔN TẬP CHƯƠNG I: CẤU TẠO NGUYÊN TỬ</div></div>
+
+ <!-- TRANG CHỦ -->
+ <div id="home">
+  <div class="card"><h2>📝 Đăng nhập làm bài</h2>
+   <label for="nm">Họ và tên</label><input id="nm" type="text" placeholder="Nguyễn Văn A" autocomplete="off">
+   <label for="cl">Lớp</label><input id="cl" type="text" placeholder="10A1" autocomplete="off">
+   <div id="err" style="color:var(--bad);margin-top:8px"></div>
+   <button class="btn" id="go">Bắt đầu làm bài</button>
+  </div>
+  <div class="card qrbox"><h2>📱 Quét mã QR để vào làm bài</h2><div class="qr" id="qr1"></div><div class="small" id="lnk1"></div></div>
+  <div class="card" style="text-align:center"><button class="btn sec sm" id="tch">🔒 Giáo viên</button></div>
+ </div>
+
+ <!-- BÀI THI -->
+ <div id="exam" class="hide">
+  <div class="bar" id="bar"><span id="who"></span><span id="tm">20:00</span></div>
+  <div id="qs"></div>
+  <div class="card"><div id="cnt" style="text-align:center;font-weight:600"></div><button class="btn red" id="sub">Nộp bài</button></div>
+ </div>
+
+ <!-- KẾT QUẢ -->
+ <div id="res" class="hide"><div class="card"><h2 style="text-align:center">Kết quả bài làm</h2><div class="score" id="sc"></div><div style="text-align:center;font-weight:700" id="gr"></div><div id="det" style="margin-top:10px"></div><button class="btn sec" id="back">Về trang chủ</button></div></div>
+
+ <!-- GIÁO VIÊN -->
+ <div id="tp" class="hide">
+  <div class="card"><h2>🔒 Đăng nhập giáo viên</h2><input id="pw" type="password" placeholder="Mật khẩu"><div id="perr" style="color:var(--bad)"></div><button class="btn" id="plog">Đăng nhập</button><button class="btn sec" id="pback">Quay lại</button></div>
+ </div>
+ <div id="td" class="hide">
+  <div class="card qrbox"><h2>📱 Mã QR cho học sinh</h2><div class="qr" id="qr2"></div>
+   <div class="small" id="lnk2"></div>
+   <label for="ov" style="align-self:stretch;text-align:left">Link bài kiểm tra (dán link đã chia sẻ nếu QR chưa đúng)</label>
+   <input id="ov" type="text" placeholder="https://..." style="align-self:stretch">
+   <button class="btn sm" id="qrset">Cập nhật QR</button></div>
+  <div class="card"><h2>📊 Thống kê <span id="tot" style="font-weight:400;font-size:.9rem"></span></h2><div id="dist"></div></div>
+  <div class="card"><h2>🏆 Bảng xếp hạng học sinh</h2><ol class="rank-list" id="rank"></ol></div>
+  <div class="card"><h2>👥 Danh sách kết quả</h2><div class="tw"><table><thead><tr><th>#</th><th>Họ tên</th><th>Lớp</th><th>Điểm</th><th>Xếp loại</th><th>Giờ nộp</th></tr></thead><tbody id="rows"></tbody></table></div>
+   <button class="btn sm" id="csv">⬇ Xuất Excel (CSV)</button><button class="btn sm red" id="rst">🗑 Xóa dữ liệu</button><button class="btn sm sec" id="tout">Thoát</button></div>
+ </div>
+</div>
+<div id="md" class="modal hide"><div><div id="mt" style="font-weight:600;margin-bottom:6px"></div><div class="row"><button class="btn sec" id="mn">Hủy</button><button class="btn" id="my">Đồng ý</button></div></div></div>
+
+<script>
+// ===== CẤU HÌNH =====
+var TEACHER_PW="giaovien123", MINUTES=20, SHEET_WEB_APP_URL=""; // dán link Apps Script (nếu tự đưa web lên hosting riêng)
+var PTS={p1:0.25,p2:1.5,p3:1.0}, PART2={0:0,1:.1,2:.25,3:.5,4:1};
+// ===== NGÂN HÀNG CÂU HỎI =====
+var P1=[
+["Hạt mang điện tích dương trong nguyên tử là",["electron.","proton.","neutron.","proton và neutron."],1],
+["Hạt nhân của hầu hết các nguyên tử được cấu tạo bởi",["proton và electron.","neutron và electron.","proton và neutron.","proton, neutron và electron."],2],
+["Nguyên tử trung hòa về điện vì",["số proton bằng số neutron.","số electron bằng số neutron.","số proton bằng số electron.","tổng số proton và neutron bằng số electron."],2],
+["Với nguyên tử có số hiệu nguyên tử Z và số khối A, số neutron được xác định bởi",["N = A + Z.","N = A - Z.","N = Z - A.","N = A/Z."],1],
+["Nguyên tử ²⁷₁₃Al có số proton, neutron và electron lần lượt là",["13; 14; 13.","14; 13; 13.","13; 13; 14.","14; 13; 14."],0],
+["Hai nguyên tử được gọi là đồng vị của nhau khi chúng có",["cùng số neutron, khác số proton.","cùng số proton, khác số neutron.","cùng số khối, khác số proton.","cùng số proton và cùng số neutron."],1],
+["Cho các nguyên tử ³⁵₁₇Cl, ³⁷₁₇Cl, ³⁷₁₈Ar. Cặp đồng vị là",["³⁵₁₇Cl và ³⁷₁₇Cl.","³⁵₁₇Cl và ³⁷₁₈Ar.","³⁷₁₇Cl và ³⁷₁₈Ar.","cả ba nguyên tử."],0],
+["Orbital nguyên tử là",["quỹ đạo xác định của electron quanh hạt nhân.","vùng không gian xung quanh hạt nhân mà xác suất có mặt electron lớn.","vùng chỉ chứa tối đa một electron.","một lớp electron của nguyên tử."],1],
+["Số electron tối đa trong một orbital là",["1.","2.","6.","8."],1],
+["Số electron tối đa của phân lớp p là",["2.","6.","10.","14."],1],
+["Cấu hình electron của nguyên tử O (Z = 8) ở trạng thái cơ bản là",["1s²2s²2p⁴.","1s²2s²2p⁶.","1s²2s¹2p⁵.","1s²2s²2p³."],0],
+["Nguyên tử có cấu hình electron 1s²2s²2p⁶3s¹ có số electron lớp ngoài cùng là",["1.","2.","8.","11."],0]];
+var P2=[
+["Trong tự nhiên, magnesium có ba đồng vị bền là ²⁴Mg, ²⁵Mg và ²⁶Mg. Một mẫu magnesium tự nhiên chứa 79% ²⁴Mg, 10% ²⁵Mg và 11% ²⁶Mg.",["Các đồng vị trên đều có 12 proton.","Đồng vị ²⁶Mg có 14 neutron.","Nguyên tử khối trung bình của mẫu magnesium trên bằng 24,32.","Trong 1 mol magnesium tự nhiên có 0,21 mol các nguyên tử thuộc hai đồng vị ²⁵Mg và ²⁶Mg."],[1,1,1,1]],
+["Nguyên tử X có Z = 17.",["Cấu hình electron của X là 1s²2s²2p⁶3s²3p⁵.","Nguyên tử X có 7 electron lớp ngoài cùng.","Ở trạng thái cơ bản, nguyên tử X có 3 electron độc thân.","Ion X⁻ có 18 electron và cấu hình electron giống nguyên tử Ar."],[1,1,0,1]]];
+var P3=[
+["Nguyên tử ⁵⁶₂₆Fe có bao nhiêu neutron?",30],
+["Một nguyên tử có tổng số proton, neutron và electron là 52; số proton bằng số electron và số neutron bằng 18. Số hiệu nguyên tử Z bằng bao nhiêu?",17],
+["Nguyên tố X có hai đồng vị ⁶³X và ⁶⁵X. Nguyên tử khối trung bình của X bằng 63,54. Phần trăm số nguyên tử của đồng vị ⁶³X bằng bao nhiêu?",73],
+["Nguyên tử X có tổng số electron trong các phân lớp p bằng 7. Số hiệu nguyên tử của X bằng bao nhiêu?",13]];
+
+// ===== TIỆN ÍCH =====
+var $=function(i){return document.getElementById(i)};
+var mem={};
+function sg(k){try{var v=localStorage.getItem(k);if(v!==null)return v}catch(e){}return mem[k]||null}
+function ss(k,v){mem[k]=v;try{localStorage.setItem(k,v)}catch(e){}}
+function show(id){["home","exam","res","tp","td"].forEach(function(x){$(x).classList.toggle("hide",x!==id)});window.scrollTo(0,0)}
+function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function confirmBox(msg,yes){$("mt").textContent=msg;$("md").classList.remove("hide");$("my").onclick=function(){$("md").classList.add("hide");yes()};$("mn").onclick=function(){$("md").classList.add("hide")}}
+function grade(s){return s>=8?"Giỏi":s>=6.5?"Khá":s>=5?"Trung bình":s>=3.5?"Yếu":"Kém"}
+var GR=["Giỏi","Khá","Trung bình","Yếu","Kém"];
+// ===== QR =====
+function pageUrl(){return sg("qrurl")||location.href.split("#")[0]}
+function drawQR(box,size){box.innerHTML="";try{new QRCode(box,{text:pageUrl(),width:size,height:size,correctLevel:QRCode.CorrectLevel.M})}catch(e){box.textContent="(Không tải được thư viện QR – hãy dùng link bên dưới)"}}
+function renderQR(){drawQR($("qr1"),200);$("lnk1").textContent=pageUrl();if(!$("td").classList.contains("hide")){drawQR($("qr2"),260);$("lnk2").textContent=pageUrl()}}
+$("qrset").onclick=function(){var v=$("ov").value.trim();if(v)ss("qrurl",v);renderQR()};
+// ===== LÀM BÀI =====
+var S=null,timer=null;
+$("go").onclick=function(){
+ var n=$("nm").value.trim(),c=$("cl").value.trim().toUpperCase();
+ if(n.length<2||!c){$("err").textContent="Vui lòng nhập đầy đủ họ tên và lớp.";return}
+ $("err").textContent="";startExam(n,c)};
+function startExam(n,c){
+ S={n:n,c:c,end:Date.now()+MINUTES*60000,
+  a:shuf(P1.map(function(q,i){return i})).map(function(i){var o=shuf([0,1,2,3]);return{i:i,o:o,v:-1}}),
+  b:shuf([0,1]).map(function(i){return{i:i,o:shuf([0,1,2,3]),v:[-1,-1,-1,-1]}}),
+  c:shuf([0,1,2,3]).map(function(i){return{i:i,v:""}})};
+ $("who").textContent=n+" – "+c;buildExam();show("exam");tick();timer=setInterval(tick,1000)}
+function buildExam(){
+ var h="",k=0,L="ABCD";
+ h+='<div class="part">PHẦN I. Trắc nghiệm nhiều lựa chọn (12 câu)</div>';
+ S.a.forEach(function(x,p){k++;h+='<div class="card q"><div class="st">Câu '+k+'. '+esc(P1[x.i][0])+'</div>';
+  x.o.forEach(function(oi,j){h+='<label class="opt" data-a="'+p+'" data-j="'+j+'"><input type="radio" name="a'+p+'">'+L[j]+'. '+esc(P1[x.i][1][oi])+'</label>'});h+='</div>'});
+ k=0;h+='<div class="part">PHẦN II. Trắc nghiệm đúng – sai (2 câu)</div>';
+ S.b.forEach(function(x,p){k++;h+='<div class="card q"><div class="st">Câu '+k+'. '+esc(P2[x.i][0])+'</div>';
+  x.o.forEach(function(oi,j){h+='<div class="tf"><span class="t"><b>'+"abcd"[j]+')</b> '+esc(P2[x.i][1][oi])+'</span><button data-b="'+p+'" data-j="'+j+'" data-v="1">Đúng</button><button data-b="'+p+'" data-j="'+j+'" data-v="0">Sai</button></div>'});h+='</div>'});
+ k=0;h+='<div class="part">PHẦN III. Trả lời ngắn (4 câu)</div>';
+ S.c.forEach(function(x,p){k++;h+='<div class="card q"><div class="st">Câu '+k+'. '+esc(P3[x.i][0])+'</div><input type="text" inputmode="decimal" data-c="'+p+'" placeholder="Nhập đáp số"></div>'});
+ $("qs").innerHTML=h;count()}
+$("qs").addEventListener("click",function(e){
+ var o=e.target.closest(".opt");
+ if(o){var p=+o.dataset.a;S.a[p].v=+o.dataset.j;o.parentNode.querySelectorAll(".opt").forEach(function(z){z.classList.toggle("sel",z===o)});count();return}
+ var b=e.target.closest("button[data-b]");
+ if(b){var p=+b.dataset.b,j=+b.dataset.j;S.b[p].v[j]=+b.dataset.v;b.parentNode.querySelectorAll("button").forEach(function(z){z.classList.toggle("on",z===b)});count()}});
+$("qs").addEventListener("input",function(e){var t=e.target;if(t.dataset.c!==undefined){S.c[+t.dataset.c].v=t.value;count()}});
+function count(){var d=S.a.filter(function(x){return x.v>=0}).length+S.b.reduce(function(s,x){return s+x.v.filter(function(v){return v>=0}).length},0)+S.c.filter(function(x){return String(x.v).trim()}).length;$("cnt").textContent="Đã trả lời: "+d+" / 12 + 8 ý + 4 câu"}
+function tick(){var r=Math.max(0,Math.round((S.end-Date.now())/1000));$("tm").textContent="⏱ "+String(Math.floor(r/60)).padStart(2,"0")+":"+String(r%60).padStart(2,"0");$("bar").classList.toggle("warn",r<300);if(r<=0)finish()}
+$("sub").onclick=function(){confirmBox("Bạn chắc chắn muốn nộp bài?",finish)};
+function num(s){var t=String(s).replace(/%/g,"").replace(/\s/g,"").replace(",",".");return t===""?NaN:parseFloat(t)}
+function finish(){
+ if(!S||S.done)return;S.done=true;clearInterval(timer);
+ var s1=0,s2=0,s3=0,d1=0,d3=0,d2=[];
+ S.a.forEach(function(x){if(x.o[x.v]===P1[x.i][2]){s1+=PTS.p1;d1++}});
+ S.b.forEach(function(x){var ok=0;x.o.forEach(function(oi,j){if(x.v[j]===P2[x.i][2][oi])ok++});d2.push(ok);s2+=PTS.p2*PART2[ok]});
+ S.c.forEach(function(x){var v=num(x.v);if(!isNaN(v)&&Math.abs(v-P3[x.i][1])<1e-6){s3+=PTS.p3;d3++}});
+ var tot=Math.round((s1+s2+s3)*100)/100,g=grade(tot);
+ var r={n:S.n,c:S.c,s:tot,g:g,p1:s1,p2:Math.round(s2*100)/100,p3:s3,t:new Date().toLocaleString("vi-VN"),ts:Date.now()};
+ var all=JSON.parse(sg("results")||"[]");all.push(r);ss("results",JSON.stringify(all));
+ if(SHEET_WEB_APP_URL){try{fetch(SHEET_WEB_APP_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(r)})}catch(e){}}
+ $("sc").textContent=tot.toFixed(2).replace(".",",")+" / 10";$("gr").textContent="Xếp loại: "+g;
+ $("det").innerHTML="<p>Phần I: <b>"+d1+"/12</b> câu đúng ("+s1.toFixed(2)+" đ)</p><p>Phần II: đúng <b>"+d2.join(" và ")+"</b> ý ở mỗi câu ("+r.p2.toFixed(2)+" đ)</p><p>Phần III: <b>"+d3+"/4</b> câu đúng ("+s3.toFixed(2)+" đ)</p>";
+ S=null;show("res")}
+$("back").onclick=function(){$("nm").value="";$("cl").value="";show("home")};
+// ===== GIÁO VIÊN =====
+$("tch").onclick=function(){$("pw").value="";$("perr").textContent="";show("tp")};
+$("pback").onclick=function(){show("home")};
+$("plog").onclick=function(){if($("pw").value===TEACHER_PW){show("td");dash();renderQR()}else $("perr").textContent="Sai mật khẩu."};
+$("tout").onclick=function(){show("home")};
+function dash(){
+ var all=JSON.parse(sg("results")||"[]"),ranked=all.slice().sort(function(a,b){return b.s-a.s||((a.ts||0)-(b.ts||0))}),cnt={};GR.forEach(function(g){cnt[g]=0});all.forEach(function(r){cnt[r.g]++});
+ $("tot").textContent="("+all.length+" bài)";
+ $("dist").innerHTML=GR.map(function(g){var p=all.length?cnt[g]*100/all.length:0;return'<div class="gb"><span class="n">'+g+'</span><div class="tr"><div class="f" style="width:'+p+'%"></div></div><span class="v">'+p.toFixed(1)+'% ('+cnt[g]+')</span></div>'}).join("");
+ $("rank").innerHTML=ranked.slice(0,10).map(function(r,i){return'<li><span class="pos">'+(i+1)+'</span><span class="student"><b>'+esc(r.n)+'</b><small>'+esc(r.c)+' · '+esc(r.g)+'</small></span><span class="mark">'+r.s.toFixed(2)+'/10</span></li>'}).join("")||'<li>Chưa có dữ liệu xếp hạng.</li>';
+ $("rows").innerHTML=ranked.map(function(r,i){return"<tr><td>"+(i+1)+"</td><td>"+esc(r.n)+"</td><td>"+esc(r.c)+"</td><td><b>"+r.s.toFixed(2)+"</b></td><td>"+esc(r.g)+"</td><td>"+esc(r.t)+"</td></tr>"}).join("")||'<tr><td colspan="6">Chưa có bài nộp.</td></tr>'}
+$("csv").onclick=function(){
+ var all=JSON.parse(sg("results")||"[]");if(!all.length)return;
+ function csvCell(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
+ var t="\uFEFFSTT,Họ tên,Lớp,Phần I,Phần II,Phần III,Tổng điểm,Xếp loại,Thời gian nộp\n"+all.map(function(r,i){return[i+1,r.n,r.c,r.p1,r.p2,r.p3,r.s,r.g,r.t].map(csvCell).join(",")}).join("\n");
+ var a=document.createElement("a"),u=URL.createObjectURL(new Blob([t],{type:"text/csv;charset=utf-8"}));a.href=u;a.download="ket-qua-hoa10-chuong1.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000)};
+$("rst").onclick=function(){confirmBox("Xóa toàn bộ kết quả để dùng cho bài kiểm tra khác?",function(){ss("results","[]");dash()})};
+renderQR();
+</script>
+</body>
+</html>
