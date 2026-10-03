@@ -26,6 +26,19 @@ Bản cũ chỉ lưu `results` bằng `localStorage`. Đây là bộ nhớ riên
 
 Không xóa Google Sheet hoặc localStorage khi cập nhật mã. Nút **Xóa dữ liệu** trong dashboard chỉ nên dùng khi giáo viên chủ động kết thúc một đợt kiểm tra.
 
+### Cập nhật chức năng xóa dữ liệu
+
+Nếu nút xóa trước đây chỉ xóa dữ liệu trên máy giáo viên, hãy cập nhật lại Apps Script bằng phiên bản mới nhất trong `apps-script.gs`:
+
+1. Mở Google Sheet → **Extensions → Apps Script**.
+2. Thay toàn bộ mã cũ bằng nội dung `apps-script.gs` mới.
+3. Bấm **Save**.
+4. Chọn **Deploy → Manage deployments → Edit**.
+5. Chọn **New version** rồi bấm **Deploy**.
+6. Giữ nguyên URL `/exec` đang điền trong `index.html`.
+
+Phiên bản mới xử lý yêu cầu `{action:"clear", quiz:QUIZ_ID}` và xóa các dòng bài nộp của đúng bài kiểm tra, giữ lại hàng tiêu đề. Website chỉ xóa `localStorage` sau khi đọc lại Google Sheet và xác nhận danh sách đã rỗng.
+
 ## Bảo toàn dữ liệu cũ
 
 Trước khi sửa, mã nguồn đã được sao lưu tại `index.html.pre-fix-backup`. Các bài đã nộp trước đây không thể tự thu hồi từ GitHub Pages vì chúng chưa từng được gửi lên máy chủ; chúng chỉ còn trên thiết bị/trình duyệt nơi học sinh nộp bài. Bản sửa không xóa dữ liệu đó. Nếu cần cứu các bài cũ, mở dashboard trên đúng thiết bị/trình duyệt đã nộp và xuất CSV hoặc cấu hình endpoint rồi mở lại dashboard để đồng bộ.

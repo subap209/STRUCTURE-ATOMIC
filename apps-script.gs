@@ -26,6 +26,10 @@ function doPost(e) {
     if (data.quiz && data.quiz !== QUIZ_ID) return json_({ok:false, error:'wrong_quiz'});
     var sheet = getSheet_();
     ensureHeaders_(sheet);
+    if (data.action === 'clear') {
+      clearQuizResults_(sheet, data.quiz || QUIZ_ID);
+      return json_({ok:true, cleared:true, quiz:QUIZ_ID});
+    }
     var id = String(data.id || '').trim();
     if (!id) return json_({ok:false, error:'missing_id'});
     var values = sheet.getDataRange().getValues();
@@ -40,6 +44,12 @@ function doPost(e) {
   } catch (err) {
     return json_({ok:false, error:String(err)});
   }
+}
+
+function clearQuizResults_(sheet, quiz) {
+  if (quiz !== QUIZ_ID) throw new Error('wrong_quiz');
+  var lastRow = sheet.getLastRow();
+  if (lastRow > 1) sheet.deleteRows(2, lastRow - 1);
 }
 
 function listResults_(quiz) {
