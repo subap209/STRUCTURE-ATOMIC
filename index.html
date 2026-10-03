@@ -139,7 +139,21 @@ function syncPending(){var pending=localResults().filter(function(r){return !r.s
 function clearRemoteResults(){
  if(!endpoint())return Promise.resolve(true);
  return fetch(endpoint(),{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=UTF-8"},body:JSON.stringify({action:"clear",quiz:QUIZ_ID}),keepalive:true})
-  .then(function(){return new Promise(function(resolve){setTimeout(function(){loadRemoteResults().then(function(remote){resolve(remote.length===0)}).catch(function(){resolve(false)})},800)})})
+  .then(function(){
+   // Apps Script có thể mất vài giây để ghi xong; kiểm tra lại nhiều lần
+   // thay vì kết luận thất bại chỉ sau 800ms.
+   return new Promise(function(resolve){
+    var tries=0;
+    function verify(){
+     tries++;
+     loadRemoteResults().then(function(remote){
+      if(remote.length===0||tries>=4){resolve(remote.length===0);return}
+      setTimeout(verify,tries*1000);
+     }).catch(function(){resolve(false)})
+    }
+    setTimeout(verify,800);
+   })
+  })
   .catch(function(){return false})
 }
 function loadRemoteResults(){return new Promise(function(resolve){if(!endpoint()){resolve([]);return}var cb="__hoaResults"+Date.now();var script=document.createElement("script");var done=false;function finish(data){if(done)return;done=true;try{delete window[cb]}catch(e){window[cb]=undefined}script.remove();resolve(data&&data.results||[])}window[cb]=finish;script.onerror=function(){finish({results:[]})};script.src=endpoint()+"?action=list&quiz="+encodeURIComponent(QUIZ_ID)+"&callback="+cb;document.head.appendChild(script);setTimeout(function(){finish({results:[]})},10000)})}
@@ -225,6 +239,13 @@ function refreshDash(){
   dashBusy=false;
  })}
 function dash(){refreshDash();if(!dashTimer)dashTimer=setInterval(refreshDash,5000)}
+function clearDashboardView(){
+ if(dashTimer){clearInterval(dashTimer);dashTimer=null}
+ $("tot").textContent="(0 bài · đã xóa trên thiết bị này)";
+ $("dist").innerHTML=GR.map(function(g){return'<div class="gb"><span class="n">'+g+'</span><div class="tr"><div class="f" style="width:0%"></div></div><span class="v">0.0% (0)</span></div>'}).join("");
+ $("rank").innerHTML='<li>Chưa có dữ liệu xếp hạng.</li>';
+ $("rows").innerHTML='<tr><td colspan="6">Chưa có bài nộp.</td></tr>';
+}
 $("csv").onclick=function(){
  var all=localResults();if(endpoint())loadRemoteResults().then(function(remote){all=mergeResults(remote);downloadCsv(all)});else downloadCsv(all);
  function downloadCsv(all){
@@ -234,9 +255,11 @@ $("csv").onclick=function(){
  }
 };
 $("rst").onclick=function(){confirmBox("Xóa toàn bộ kết quả cũ trên Google Sheet và thiết bị này? Không thể hoàn tác.",function(){
+ // Xóa local trước để thao tác luôn có hiệu lực trên thiết bị đang dùng.
+ writeResults([]);clearDashboardView();
  clearRemoteResults().then(function(ok){
-  if(ok){writeResults([]);dash();alert("Đã xóa dữ liệu cũ trên Google Sheet và thiết bị này.")}
-  else{dash();alert("Chưa xác nhận được việc xóa trên Google Sheet. Dữ liệu cục bộ được giữ nguyên; hãy cập nhật lại Apps Script và thử lại.")}
+  if(ok){alert("Đã xóa dữ liệu cũ trên Google Sheet và thiết bị này.")}
+  else{alert("Đã xóa dữ liệu trên thiết bị này. Google Sheet chưa xác nhận được việc xóa; hãy triển khai lại apps-script.gs rồi bấm Cập nhật ngay.")}
  })
 })};
 renderQR();
