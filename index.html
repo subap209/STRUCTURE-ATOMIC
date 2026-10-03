@@ -94,7 +94,10 @@ table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:6px 5px;
 
 <script>
 // ===== CẤU HÌNH =====
-var TEACHER_PW="giaovien123", MINUTES=20, SHEET_WEB_APP_URL=""; // dán link Apps Script (nếu tự đưa web lên hosting riêng)
+var TEACHER_PW="giaovien123", MINUTES=20,
+    // Dán URL Web app Apps Script vào đây sau khi triển khai apps-script.gs.
+    SHEET_WEB_APP_URL="",
+    QUIZ_ID="hoa10-chuong1-cau-tao-nguyen-tu";
 var PTS={p1:0.25,p2:1.5,p3:1.0}, PART2={0:0,1:.1,2:.25,3:.5,4:1};
 // ===== NGÂN HÀNG CÂU HỎI =====
 var P1=[
@@ -124,6 +127,16 @@ var $=function(i){return document.getElementById(i)};
 var mem={};
 function sg(k){try{var v=localStorage.getItem(k);if(v!==null)return v}catch(e){}return mem[k]||null}
 function ss(k,v){mem[k]=v;try{localStorage.setItem(k,v)}catch(e){}}
+function readResults(){try{return JSON.parse(sg("results")||"[]")}catch(e){return[]}}
+function writeResults(all){ss("results",JSON.stringify(all))}
+function resultId(r){return r.id||[QUIZ_ID,r.n,r.c,r.ts||r.t,r.s].map(function(x){return String(x||"")}).join("|")}
+function normalizeResult(r){r.id=resultId(r);r.quiz=r.quiz||QUIZ_ID;r.sent=!!r.sent;return r}
+function localResults(){var all=readResults().map(normalizeResult);writeResults(all);return all}
+function mergeResults(remote){var byId={};localResults().forEach(function(r){byId[r.id]=r});(remote||[]).forEach(function(r){r=normalizeResult(r);byId[r.id]=Object.assign({},byId[r.id]||{},r,{sent:true})});var all=Object.keys(byId).map(function(k){return byId[k]});writeResults(all);return all}
+function endpoint(){return SHEET_WEB_APP_URL.trim().replace(/\/$/,"")}
+function sendResult(r){if(!endpoint()||r.sent)return Promise.resolve(false);return fetch(endpoint(),{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=UTF-8"},body:JSON.stringify(r),keepalive:true}).then(function(){var all=localResults();var x=all.find(function(z){return z.id===r.id});if(x){x.sent=true;writeResults(all)}return true}).catch(function(){return false})}
+function syncPending(){var pending=localResults().filter(function(r){return !r.sent});return Promise.all(pending.map(sendResult))}
+function loadRemoteResults(){return new Promise(function(resolve){if(!endpoint()){resolve([]);return}var cb="__hoaResults"+Date.now();var script=document.createElement("script");var done=false;function finish(data){if(done)return;done=true;try{delete window[cb]}catch(e){window[cb]=undefined}script.remove();resolve(data&&data.results||[])}window[cb]=finish;script.onerror=function(){finish({results:[]})};script.src=endpoint()+"?action=list&quiz="+encodeURIComponent(QUIZ_ID)+"&callback="+cb;document.head.appendChild(script);setTimeout(function(){finish({results:[]})},10000)})}
 function show(id){["home","exam","res","tp","td"].forEach(function(x){$(x).classList.toggle("hide",x!==id)});window.scrollTo(0,0)}
 function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -175,9 +188,9 @@ function finish(){
  S.b.forEach(function(x){var ok=0;x.o.forEach(function(oi,j){if(x.v[j]===P2[x.i][2][oi])ok++});d2.push(ok);s2+=PTS.p2*PART2[ok]});
  S.c.forEach(function(x){var v=num(x.v);if(!isNaN(v)&&Math.abs(v-P3[x.i][1])<1e-6){s3+=PTS.p3;d3++}});
  var tot=Math.round((s1+s2+s3)*100)/100,g=grade(tot);
- var r={n:S.n,c:S.c,s:tot,g:g,p1:s1,p2:Math.round(s2*100)/100,p3:s3,t:new Date().toLocaleString("vi-VN"),ts:Date.now()};
- var all=JSON.parse(sg("results")||"[]");all.push(r);ss("results",JSON.stringify(all));
- if(SHEET_WEB_APP_URL){try{fetch(SHEET_WEB_APP_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(r)})}catch(e){}}
+ var r={id:QUIZ_ID+"-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),quiz:QUIZ_ID,n:S.n,c:S.c,s:tot,g:g,p1:s1,p2:Math.round(s2*100)/100,p3:s3,t:new Date().toLocaleString("vi-VN"),ts:Date.now(),sent:false};
+ // Ghi xuống máy trước, rồi mới gửi mạng: mất mạng không làm mất bài.
+ var all=localResults();all.push(r);writeResults(all);sendResult(r);
  $("sc").textContent=tot.toFixed(2).replace(".",",")+" / 10";$("gr").textContent="Xếp loại: "+g;
  $("det").innerHTML="<p>Phần I: <b>"+d1+"/12</b> câu đúng ("+s1.toFixed(2)+" đ)</p><p>Phần II: đúng <b>"+d2.join(" và ")+"</b> ý ở mỗi câu ("+r.p2.toFixed(2)+" đ)</p><p>Phần III: <b>"+d3+"/4</b> câu đúng ("+s3.toFixed(2)+" đ)</p>";
  S=null;show("res")}
@@ -188,16 +201,26 @@ $("pback").onclick=function(){show("home")};
 $("plog").onclick=function(){if($("pw").value===TEACHER_PW){show("td");dash();renderQR()}else $("perr").textContent="Sai mật khẩu."};
 $("tout").onclick=function(){show("home")};
 function dash(){
- var all=JSON.parse(sg("results")||"[]"),ranked=all.slice().sort(function(a,b){return b.s-a.s||((a.ts||0)-(b.ts||0))}),cnt={};GR.forEach(function(g){cnt[g]=0});all.forEach(function(r){cnt[r.g]++});
- $("tot").textContent="("+all.length+" bài)";
+ var local=localResults();
+ syncPending().then(function(){return loadRemoteResults()}).then(function(remote){
+  var all=mergeResults(remote),ranked=all.slice().sort(function(a,b){return b.s-a.s||((a.ts||0)-(b.ts||0))}),cnt={};
+  GR.forEach(function(g){cnt[g]=0});all.forEach(function(r){cnt[r.g]++});
+  $("tot").textContent="("+all.length+" bài"+(endpoint()?" · đã đồng bộ":" · chỉ trên máy này")+")";
  $("dist").innerHTML=GR.map(function(g){var p=all.length?cnt[g]*100/all.length:0;return'<div class="gb"><span class="n">'+g+'</span><div class="tr"><div class="f" style="width:'+p+'%"></div></div><span class="v">'+p.toFixed(1)+'% ('+cnt[g]+')</span></div>'}).join("");
  $("rank").innerHTML=ranked.slice(0,10).map(function(r,i){return'<li><span class="pos">'+(i+1)+'</span><span class="student"><b>'+esc(r.n)+'</b><small>'+esc(r.c)+' · '+esc(r.g)+'</small></span><span class="mark">'+r.s.toFixed(2)+'/10</span></li>'}).join("")||'<li>Chưa có dữ liệu xếp hạng.</li>';
- $("rows").innerHTML=ranked.map(function(r,i){return"<tr><td>"+(i+1)+"</td><td>"+esc(r.n)+"</td><td>"+esc(r.c)+"</td><td><b>"+r.s.toFixed(2)+"</b></td><td>"+esc(r.g)+"</td><td>"+esc(r.t)+"</td></tr>"}).join("")||'<tr><td colspan="6">Chưa có bài nộp.</td></tr>'}
+ $("rows").innerHTML=ranked.map(function(r,i){return"<tr><td>"+(i+1)+"</td><td>"+esc(r.n)+"</td><td>"+esc(r.c)+"</td><td><b>"+r.s.toFixed(2)+"</b></td><td>"+esc(r.g)+"</td><td>"+esc(r.t)+"</td></tr>"}).join("")||'<tr><td colspan="6">Chưa có bài nộp.</td></tr>';
+ }).catch(function(){
+  // Nếu endpoint tạm lỗi, vẫn hiển thị bản cục bộ thay vì làm hỏng trang giáo viên.
+  $("tot").textContent="("+local.length+" bài · ngoại tuyến)";
+ })}
 $("csv").onclick=function(){
- var all=JSON.parse(sg("results")||"[]");if(!all.length)return;
- function csvCell(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
- var t="\uFEFFSTT,Họ tên,Lớp,Phần I,Phần II,Phần III,Tổng điểm,Xếp loại,Thời gian nộp\n"+all.map(function(r,i){return[i+1,r.n,r.c,r.p1,r.p2,r.p3,r.s,r.g,r.t].map(csvCell).join(",")}).join("\n");
- var a=document.createElement("a"),u=URL.createObjectURL(new Blob([t],{type:"text/csv;charset=utf-8"}));a.href=u;a.download="ket-qua-hoa10-chuong1.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000)};
+ var all=localResults();if(endpoint())loadRemoteResults().then(function(remote){all=mergeResults(remote);downloadCsv(all)});else downloadCsv(all);
+ function downloadCsv(all){
+  if(!all.length)return;function csvCell(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
+  var t="\uFEFFSTT,Họ tên,Lớp,Phần I,Phần II,Phần III,Tổng điểm,Xếp loại,Thời gian nộp\n"+all.map(function(r,i){return[i+1,r.n,r.c,r.p1,r.p2,r.p3,r.s,r.g,r.t].map(csvCell).join(",")}).join("\n");
+  var a=document.createElement("a"),u=URL.createObjectURL(new Blob([t],{type:"text/csv;charset=utf-8"}));a.href=u;a.download="ket-qua-hoa10-chuong1.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},1000)
+ }
+};
 $("rst").onclick=function(){confirmBox("Xóa toàn bộ kết quả để dùng cho bài kiểm tra khác?",function(){ss("results","[]");dash()})};
 renderQR();
 </script>
