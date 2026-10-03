@@ -84,7 +84,7 @@ table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:6px 5px;
    <label for="ov" style="align-self:stretch;text-align:left">Link bài kiểm tra (dán link đã chia sẻ nếu QR chưa đúng)</label>
    <input id="ov" type="text" placeholder="https://..." style="align-self:stretch">
    <button class="btn sm" id="qrset">Cập nhật QR</button></div>
-  <div class="card"><h2>📊 Thống kê <span id="tot" style="font-weight:400;font-size:.9rem"></span></h2><div id="dist"></div></div>
+  <div class="card"><h2>📊 Thống kê <span id="tot" style="font-weight:400;font-size:.9rem"></span></h2><button class="btn sm sec" id="refresh" type="button">↻ Cập nhật ngay</button><div id="dist"></div></div>
   <div class="card"><h2>🏆 Bảng xếp hạng học sinh</h2><ol class="rank-list" id="rank"></ol></div>
   <div class="card"><h2>👥 Danh sách kết quả</h2><div class="tw"><table><thead><tr><th>#</th><th>Họ tên</th><th>Lớp</th><th>Điểm</th><th>Xếp loại</th><th>Giờ nộp</th></tr></thead><tbody id="rows"></tbody></table></div>
    <button class="btn sm" id="csv">⬇ Xuất Excel (CSV)</button><button class="btn sm red" id="rst">🗑 Xóa dữ liệu</button><button class="btn sm sec" id="tout">Thoát</button></div>
@@ -149,7 +149,7 @@ function drawQR(box,size){box.innerHTML="";try{new QRCode(box,{text:pageUrl(),wi
 function renderQR(){drawQR($("qr1"),200);$("lnk1").textContent=pageUrl();if(!$("td").classList.contains("hide")){drawQR($("qr2"),260);$("lnk2").textContent=pageUrl()}}
 $("qrset").onclick=function(){var v=$("ov").value.trim();if(v)ss("qrurl",v);renderQR()};
 // ===== LÀM BÀI =====
-var S=null,timer=null;
+var S=null,timer=null,dashTimer=null,dashBusy=false;
 $("go").onclick=function(){
  var n=$("nm").value.trim(),c=$("cl").value.trim().toUpperCase();
  if(n.length<2||!c){$("err").textContent="Vui lòng nhập đầy đủ họ tên và lớp.";return}
@@ -199,8 +199,11 @@ $("back").onclick=function(){$("nm").value="";$("cl").value="";show("home")};
 $("tch").onclick=function(){$("pw").value="";$("perr").textContent="";show("tp")};
 $("pback").onclick=function(){show("home")};
 $("plog").onclick=function(){if($("pw").value===TEACHER_PW){show("td");dash();renderQR()}else $("perr").textContent="Sai mật khẩu."};
-$("tout").onclick=function(){show("home")};
-function dash(){
+$("tout").onclick=function(){if(dashTimer){clearInterval(dashTimer);dashTimer=null}show("home")};
+$("refresh").onclick=function(){refreshDash()};
+function refreshDash(){
+ if(dashBusy)return;
+ dashBusy=true;
  var local=localResults();
  syncPending().then(function(){return loadRemoteResults()}).then(function(remote){
   var all=mergeResults(remote),ranked=all.slice().sort(function(a,b){return b.s-a.s||((a.ts||0)-(b.ts||0))}),cnt={};
@@ -209,10 +212,13 @@ function dash(){
  $("dist").innerHTML=GR.map(function(g){var p=all.length?cnt[g]*100/all.length:0;return'<div class="gb"><span class="n">'+g+'</span><div class="tr"><div class="f" style="width:'+p+'%"></div></div><span class="v">'+p.toFixed(1)+'% ('+cnt[g]+')</span></div>'}).join("");
  $("rank").innerHTML=ranked.slice(0,10).map(function(r,i){return'<li><span class="pos">'+(i+1)+'</span><span class="student"><b>'+esc(r.n)+'</b><small>'+esc(r.c)+' · '+esc(r.g)+'</small></span><span class="mark">'+r.s.toFixed(2)+'/10</span></li>'}).join("")||'<li>Chưa có dữ liệu xếp hạng.</li>';
  $("rows").innerHTML=ranked.map(function(r,i){return"<tr><td>"+(i+1)+"</td><td>"+esc(r.n)+"</td><td>"+esc(r.c)+"</td><td><b>"+r.s.toFixed(2)+"</b></td><td>"+esc(r.g)+"</td><td>"+esc(r.t)+"</td></tr>"}).join("")||'<tr><td colspan="6">Chưa có bài nộp.</td></tr>';
+  dashBusy=false;
  }).catch(function(){
   // Nếu endpoint tạm lỗi, vẫn hiển thị bản cục bộ thay vì làm hỏng trang giáo viên.
   $("tot").textContent="("+local.length+" bài · ngoại tuyến)";
+  dashBusy=false;
  })}
+function dash(){refreshDash();if(!dashTimer)dashTimer=setInterval(refreshDash,5000)}
 $("csv").onclick=function(){
  var all=localResults();if(endpoint())loadRemoteResults().then(function(remote){all=mergeResults(remote);downloadCsv(all)});else downloadCsv(all);
  function downloadCsv(all){
