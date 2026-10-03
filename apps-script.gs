@@ -27,8 +27,9 @@ function doPost(e) {
     var sheet = getSheet_();
     ensureHeaders_(sheet);
     if (data.action === 'clear') {
-      clearQuizResults_(sheet, data.quiz || QUIZ_ID);
-      return json_({ok:true, cleared:true, quiz:QUIZ_ID});
+      var removed = clearQuizResults_(sheet, data.quiz || QUIZ_ID);
+      SpreadsheetApp.flush();
+      return json_({ok:true, cleared:true, removed:removed, quiz:QUIZ_ID});
     }
     var id = String(data.id || '').trim();
     if (!id) return json_({ok:false, error:'missing_id'});
@@ -49,7 +50,19 @@ function doPost(e) {
 function clearQuizResults_(sheet, quiz) {
   if (quiz !== QUIZ_ID) throw new Error('wrong_quiz');
   var lastRow = sheet.getLastRow();
-  if (lastRow > 1) sheet.deleteRows(2, lastRow - 1);
+  if (lastRow <= 1) return 0;
+
+  // Chỉ xóa các dòng của bài kiểm tra hiện tại, không ảnh hưởng dữ liệu
+  // của bài kiểm tra khác nếu dùng chung sheet Submissions.
+  var rows = sheet.getRange(2, 1, lastRow - 1, HEADERS.length).getValues();
+  var removed = 0;
+  for (var i = rows.length - 1; i >= 0; i--) {
+    if (String(rows[i][1]) === quiz) {
+      sheet.deleteRow(i + 2);
+      removed++;
+    }
+  }
+  return removed;
 }
 
 function listResults_(quiz) {
