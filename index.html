@@ -155,7 +155,7 @@ $("go").onclick=function(){
  if(n.length<2||!c){$("err").textContent="Vui lòng nhập đầy đủ họ tên và lớp.";return}
  $("err").textContent="";startExam(n,c)};
 function startExam(n,c){
- S={n:n,c:c,end:Date.now()+MINUTES*60000,
+ S={n:n,cl:c,end:Date.now()+MINUTES*60000,
   a:shuf(P1.map(function(q,i){return i})).map(function(i){var o=shuf([0,1,2,3]);return{i:i,o:o,v:-1}}),
   b:shuf([0,1]).map(function(i){return{i:i,o:shuf([0,1,2,3]),v:[-1,-1,-1,-1]}}),
   c:shuf([0,1,2,3]).map(function(i){return{i:i,v:""}})};
@@ -188,7 +188,7 @@ function finish(){
  S.b.forEach(function(x){var ok=0;x.o.forEach(function(oi,j){if(x.v[j]===P2[x.i][2][oi])ok++});d2.push(ok);s2+=PTS.p2*PART2[ok]});
  S.c.forEach(function(x){var v=num(x.v);if(!isNaN(v)&&Math.abs(v-P3[x.i][1])<1e-6){s3+=PTS.p3;d3++}});
  var tot=Math.round((s1+s2+s3)*100)/100,g=grade(tot);
- var r={id:QUIZ_ID+"-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),quiz:QUIZ_ID,n:S.n,c:S.c,s:tot,g:g,p1:s1,p2:Math.round(s2*100)/100,p3:s3,t:new Date().toLocaleString("vi-VN"),ts:Date.now(),sent:false};
+ var r={id:QUIZ_ID+"-"+Date.now()+"-"+Math.random().toString(36).slice(2,8),quiz:QUIZ_ID,n:S.n,c:S.cl,s:tot,g:g,p1:s1,p2:Math.round(s2*100)/100,p3:s3,t:new Date().toLocaleString("vi-VN"),ts:Date.now(),sent:false};
  // Ghi xuống máy trước, rồi mới gửi mạng: mất mạng không làm mất bài.
  var all=localResults();all.push(r);writeResults(all);sendResult(r);
  $("sc").textContent=tot.toFixed(2).replace(".",",")+" / 10";$("gr").textContent="Xếp loại: "+g;
