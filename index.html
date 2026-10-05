@@ -50,7 +50,7 @@ table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:6px 5px;
 </head>
 <body>
 <div class="wrap">
- <div class="requested-title"><div>Nguyễn Văn Quý - THPT QUANG TRUNG</div><div>ÔN TẬP CHƯƠNG I: CẤU TẠO NGUYÊN TỬ</div></div>
+ <div class="requested-title"><div>Nguyễn Văn Quý - THPT QUANG TRUNG</div><div>HỢP CHẤT CARBONYL – CARBOXYLIC ACID</div></div>
 
  <!-- TRANG CHỦ -->
  <div id="home">
@@ -66,7 +66,7 @@ table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:6px 5px;
 
  <!-- BÀI THI -->
  <div id="exam" class="hide">
-  <div class="bar" id="bar"><span id="who"></span><span id="tm">20:00</span></div>
+  <div class="bar" id="bar"><span id="who"></span><span id="tm">45:00</span></div>
   <div id="qs"></div>
   <div class="card"><div id="cnt" style="text-align:center;font-weight:600"></div><button class="btn red" id="sub">Nộp bài</button></div>
  </div>
@@ -94,33 +94,43 @@ table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:6px 5px;
 
 <script>
 // ===== CẤU HÌNH =====
-var TEACHER_PW="giaovien123", MINUTES=20,
+var TEACHER_PW="giaovien123", MINUTES=45,
     // Dán URL Web app Apps Script vào đây sau khi triển khai apps-script.gs.
     SHEET_WEB_APP_URL="https://script.google.com/macros/s/AKfycbyCzMyY7kkFd6_X9r4GCA-tAz56RLH_dwo9G7VGZEwWU46GLQkc5yFupADNCWQyjzCB3Q/exec",
-    QUIZ_ID="hoa10-chuong1-cau-tao-nguyen-tu";
-var PTS={p1:0.25,p2:1.5,p3:1.0}, PART2={0:0,1:.1,2:.25,3:.5,4:1};
+    QUIZ_ID="hoa12-carbonyl-carboxylic-acid";
+var PTS={p1:0.25,p2:1.0,p3:0.25}, PART2={0:0,1:.1,2:.25,3:.5,4:1};
 // ===== NGÂN HÀNG CÂU HỎI =====
 var P1=[
-["Hạt mang điện tích dương trong nguyên tử là",["electron.","proton.","neutron.","proton và neutron."],1],
-["Hạt nhân của hầu hết các nguyên tử được cấu tạo bởi",["proton và electron.","neutron và electron.","proton và neutron.","proton, neutron và electron."],2],
-["Nguyên tử trung hòa về điện vì",["số proton bằng số neutron.","số electron bằng số neutron.","số proton bằng số electron.","tổng số proton và neutron bằng số electron."],2],
-["Với nguyên tử có số hiệu nguyên tử Z và số khối A, số neutron được xác định bởi",["N = A + Z.","N = A - Z.","N = Z - A.","N = A/Z."],1],
-["Nguyên tử ²⁷₁₃Al có số proton, neutron và electron lần lượt là",["13; 14; 13.","14; 13; 13.","13; 13; 14.","14; 13; 14."],0],
-["Hai nguyên tử được gọi là đồng vị của nhau khi chúng có",["cùng số neutron, khác số proton.","cùng số proton, khác số neutron.","cùng số khối, khác số proton.","cùng số proton và cùng số neutron."],1],
-["Cho các nguyên tử ³⁵₁₇Cl, ³⁷₁₇Cl, ³⁷₁₈Ar. Cặp đồng vị là",["³⁵₁₇Cl và ³⁷₁₇Cl.","³⁵₁₇Cl và ³⁷₁₈Ar.","³⁷₁₇Cl và ³⁷₁₈Ar.","cả ba nguyên tử."],0],
-["Orbital nguyên tử là",["quỹ đạo xác định của electron quanh hạt nhân.","vùng không gian xung quanh hạt nhân mà xác suất có mặt electron lớn.","vùng chỉ chứa tối đa một electron.","một lớp electron của nguyên tử."],1],
-["Số electron tối đa trong một orbital là",["1.","2.","6.","8."],1],
-["Số electron tối đa của phân lớp p là",["2.","6.","10.","14."],1],
-["Cấu hình electron của nguyên tử O (Z = 8) ở trạng thái cơ bản là",["1s²2s²2p⁴.","1s²2s²2p⁶.","1s²2s¹2p⁵.","1s²2s²2p³."],0],
-["Nguyên tử có cấu hình electron 1s²2s²2p⁶3s¹ có số electron lớp ngoài cùng là",["1.","2.","8.","11."],0]];
+["Cặp chất nào sau đây đều thuộc loại hợp chất carbonyl?",["CH₃CH₂OH và CH₃OCH₃.","CH₃CH₂CHO và CH₃COCH₃.","CH₃COOH và CH₃COOC₂H₅.","C₆H₅OH và C₆H₅CH₂OH."],1],
+["Hợp chất có công thức cấu tạo thu gọn CH₃–CH(CH₃)–CH₂–CHO có tên thay thế là",["2-methylbutanal.","3-methylbutanal.","2-methylbutan-1-one.","3-methylbutan-2-one."],1],
+["Cinnamaldehyde C₆H₅–CH=CH–CHO được khử bằng NaBH₄. Sản phẩm hữu cơ là",["C₆H₅CH₂CH₂CHO.","C₆H₅CH=CHCH₂OH.","C₆H₅CH₂CH₂CH₂OH.","C₆H₅COCH₂CH₃."],1],
+["Tên thay thế của ketone có công thức CH₃COCH₂CH₃ là",["butanal.","butan-1-one.","butan-2-one.","2-methylpropanal."],2],
+["Khi khử acetone bằng NaBH₄, sản phẩm hữu cơ là",["CH₃CH₂CH₂OH.","CH₃CH(OH)CH₃.","CH₃CH₂CHO.","CH₃COOH."],1],
+["Thuốc thử phù hợp nhất để phân biệt hai dung dịch CH₃CHO và CH₃COCH₃ là",["dung dịch NaCl.","thuốc thử Tollens.","dung dịch HCl.","quỳ tím."],1],
+["Cho CH₃CHO, CH₃COCH₂CH₃, C₆H₅COCH₃, CH₃CH₂CHO. Số chất có khả năng tạo iodoform là",["1.","2.","3.","4."],2],
+["Phương trình điều chế ethanal từ ethylene là",["CH₂=CH₂ + H₂O → CH₃CH₂OH.","2CH₂=CH₂ + O₂ → 2CH₃CHO.","CH₃CH₂OH + O₂ → CH₃COOH + H₂O.","CH₃CHO + H₂ → CH₃CH₂OH."],1],
+["Trong công nghiệp, acetone có thể được điều chế từ cumene. Sản phẩm hữu cơ quan trọng khác là",["benzene.","phenol.","ethanol.","acetic acid."],1],
+["Lactic acid có công thức cấu tạo thu gọn là",["CH₃CH₂COOH.","CH₃CH(OH)COOH.","HOOCCH₂COOH.","CH₂=CHCOOH."],1],
+["Carboxylic acid CH₃–CH(CH₃)–CH₂–COOH được gọi là",["2-methylbutanoic acid.","3-methylbutanoic acid.","2-methylpentanoic acid.","3-methylpentanoic acid."],1],
+["Acetic acid phản ứng được với tất cả các chất trong dãy nào?",["Zn, CuO, NaOH, Na₂CO₃.","Cu, CuO, NaOH, NaCl.","Ag, NaOH, NaCl, CaCO₃.","Cu, Ag, Na₂CO₃, NaCl."],0],
+["Acetic acid phản ứng với ethanol có H₂SO₄ đặc, đun nóng tạo ester là",["HCOOC₂H₅.","CH₃COOCH₃.","CH₃COOC₂H₅.","C₂H₅COOCH₃."],2],
+["Phương trình đúng mô tả quá trình lên men giấm là",["C₂H₅OH + O₂ → CH₃COOH + H₂O.","CH₃OH + O₂ → HCOOH + H₂O.","CH₃CHO + H₂ → C₂H₅OH.","CH₃COOH + C₂H₅OH → CH₃COOC₂H₅ + H₂O."],0],
+["Số carboxylic acid đơn chức, no, mạch hở có công thức C₄H₈O₂ là",["1.","2.","3.","4."],1],
+["Trong một phân tử citric acid HOOC–CH₂–C(OH)(COOH)–CH₂–COOH có số nhóm –COOH là",["1.","2.","3.","4."],2],
+["Với sơ đồ CH₃CH₂OH → CH₃CHO → CH₃COOH, cặp chất/điều kiện phù hợp là",["CuO, đun nóng và nước bromine.","NaOH và H₂.","H₂/Ni và NaBH₄.","H₂SO₄ đặc và NaOH."],0],
+["1,92 gam citric acid C₆H₈O₇ phản ứng hoàn toàn với NaHCO₃ dư. Thể tích CO₂ ở 25 °C, 1 bar là",["0,2479 L.","0,4958 L.","0,7437 L.","1,4874 L."],2]];
 var P2=[
-["Trong tự nhiên, magnesium có ba đồng vị bền là ²⁴Mg, ²⁵Mg và ²⁶Mg. Một mẫu magnesium tự nhiên chứa 79% ²⁴Mg, 10% ²⁵Mg và 11% ²⁶Mg.",["Các đồng vị trên đều có 12 proton.","Đồng vị ²⁶Mg có 14 neutron.","Nguyên tử khối trung bình của mẫu magnesium trên bằng 24,32.","Trong 1 mol magnesium tự nhiên có 0,21 mol các nguyên tử thuộc hai đồng vị ²⁵Mg và ²⁶Mg."],[1,1,1,1]],
-["Nguyên tử X có Z = 17.",["Cấu hình electron của X là 1s²2s²2p⁶3s²3p⁵.","Nguyên tử X có 7 electron lớp ngoài cùng.","Ở trạng thái cơ bản, nguyên tử X có 3 electron độc thân.","Ion X⁻ có 18 electron và cấu hình electron giống nguyên tử Ar."],[1,1,0,1]]];
+["Cinnamaldehyde C₆H₅–CH=CH–CHO là chất tạo mùi đặc trưng của quế.",["Công thức phân tử của cinnamaldehyde là C₉H₈O.","Cinnamaldehyde là một aldehyde.","Cinnamaldehyde phản ứng với thuốc thử Tollens tạo Ag.","Khử cinnamaldehyde bằng NaBH₄ thu được C₆H₅CH₂CH₂CH₂OH."],[1,1,1,0]],
+["Acetone là dung môi hữu cơ quen thuộc, có công thức CH₃–CO–CH₃.",["Tên thay thế của acetone là propanone.","Acetone phản ứng với thuốc thử Tollens tạo lớp bạc sáng.","Khử acetone bằng NaBH₄ thu được propan-2-ol.","Trong quá trình cumene, acetone là sản phẩm hữu cơ duy nhất."],[1,0,1,0]],
+["Lactic acid có trong sữa chua, công thức CH₃–CH(OH)–COOH.",["Công thức phân tử của lactic acid là C₃H₆O₃.","Trong phân tử có một nhóm –OH và một nhóm –COOH.","Một mol lactic acid tác dụng với NaHCO₃ dư giải phóng 2 mol CO₂.","Lactic acid có thể phản ứng với ethanol tạo ester."],[1,1,0,1]],
+["Citric acid có công thức HOOC–CH₂–C(OH)(COOH)–CH₂–COOH.",["Công thức phân tử của citric acid là C₆H₈O₇.","Một phân tử citric acid có ba nhóm carboxyl.","Một mol citric acid phản ứng tối đa với 3 mol NaOH theo tính acid của nhóm –COOH.","Ester hóa hoàn toàn ba nhóm –COOH của 1 mol citric acid chỉ cần 1 mol ethanol."],[1,1,1,0]]];
 var P3=[
-["Nguyên tử ⁵⁶₂₆Fe có bao nhiêu neutron?",30],
-["Một nguyên tử có tổng số proton, neutron và electron là 52; số proton bằng số electron và số neutron bằng 18. Số hiệu nguyên tử Z bằng bao nhiêu?",17],
-["Nguyên tố X có hai đồng vị ⁶³X và ⁶⁵X. Nguyên tử khối trung bình của X bằng 63,54. Phần trăm số nguyên tử của đồng vị ⁶³X bằng bao nhiêu?",73],
-["Nguyên tử X có tổng số electron trong các phân lớp p bằng 7. Số hiệu nguyên tử của X bằng bao nhiêu?",13]];
+["Cho HCHO; CH₃COCH₃; CH₃COOH; C₆H₅CHO; CH₃COOC₂H₅; CH₃CH₂CHO. Có bao nhiêu chất thuộc loại hợp chất carbonyl?",4],
+["Có bao nhiêu hợp chất carbonyl đơn chức, no, mạch hở ứng với công thức phân tử C₄H₈O?",3],
+["4,40 gam ethanal phản ứng hoàn toàn với lượng dư thuốc thử Tollens. Khối lượng Ag tối đa thu được là bao nhiêu gam?",21.6],
+["Lactic acid CH₃CH(OH)COOH. Khối lượng NaOH vừa đủ để trung hòa hoàn toàn 9,00 gam lactic acid là bao nhiêu gam?",4.0],
+["Có bao nhiêu carboxylic acid đơn chức, no, mạch hở có công thức phân tử C₅H₁₀O₂?",4],
+["Từ 60,0 gam cumene, hiệu suất toàn quá trình 80%, thu được bao nhiêu gam acetone? (M(cumene)=120, M(acetone)=58)",23.2]];
 
 // ===== TIỆN ÍCH =====
 var $=function(i){return document.getElementById(i)};
@@ -182,13 +192,13 @@ function startExam(n,c){
  $("who").textContent=n+" – "+c;buildExam();show("exam");tick();timer=setInterval(tick,1000)}
 function buildExam(){
  var h="",k=0,L="ABCD";
- h+='<div class="part">PHẦN I. Trắc nghiệm nhiều lựa chọn (12 câu)</div>';
+ h+='<div class="part">PHẦN I. Trắc nghiệm nhiều lựa chọn (18 câu)</div>';
  S.a.forEach(function(x,p){k++;h+='<div class="card q"><div class="st">Câu '+k+'. '+esc(P1[x.i][0])+'</div>';
   x.o.forEach(function(oi,j){h+='<label class="opt" data-a="'+p+'" data-j="'+j+'"><input type="radio" name="a'+p+'">'+L[j]+'. '+esc(P1[x.i][1][oi])+'</label>'});h+='</div>'});
- k=0;h+='<div class="part">PHẦN II. Trắc nghiệm đúng – sai (2 câu)</div>';
+ k=0;h+='<div class="part">PHẦN II. Trắc nghiệm đúng – sai (4 câu)</div>';
  S.b.forEach(function(x,p){k++;h+='<div class="card q"><div class="st">Câu '+k+'. '+esc(P2[x.i][0])+'</div>';
   x.o.forEach(function(oi,j){h+='<div class="tf"><span class="t"><b>'+"abcd"[j]+')</b> '+esc(P2[x.i][1][oi])+'</span><button data-b="'+p+'" data-j="'+j+'" data-v="1">Đúng</button><button data-b="'+p+'" data-j="'+j+'" data-v="0">Sai</button></div>'});h+='</div>'});
- k=0;h+='<div class="part">PHẦN III. Trả lời ngắn (4 câu)</div>';
+ k=0;h+='<div class="part">PHẦN III. Trả lời ngắn (6 câu)</div>';
  S.c.forEach(function(x,p){k++;h+='<div class="card q"><div class="st">Câu '+k+'. '+esc(P3[x.i][0])+'</div><input type="text" inputmode="decimal" data-c="'+p+'" placeholder="Nhập đáp số"></div>'});
  $("qs").innerHTML=h;count()}
 $("qs").addEventListener("click",function(e){
@@ -197,7 +207,7 @@ $("qs").addEventListener("click",function(e){
  var b=e.target.closest("button[data-b]");
  if(b){var p=+b.dataset.b,j=+b.dataset.j;S.b[p].v[j]=+b.dataset.v;b.parentNode.querySelectorAll("button").forEach(function(z){z.classList.toggle("on",z===b)});count()}});
 $("qs").addEventListener("input",function(e){var t=e.target;if(t.dataset.c!==undefined){S.c[+t.dataset.c].v=t.value;count()}});
-function count(){var d=S.a.filter(function(x){return x.v>=0}).length+S.b.reduce(function(s,x){return s+x.v.filter(function(v){return v>=0}).length},0)+S.c.filter(function(x){return String(x.v).trim()}).length;$("cnt").textContent="Đã trả lời: "+d+" / 12 + 8 ý + 4 câu"}
+function count(){var d=S.a.filter(function(x){return x.v>=0}).length+S.b.reduce(function(s,x){return s+x.v.filter(function(v){return v>=0}).length},0)+S.c.filter(function(x){return String(x.v).trim()}).length;$("cnt").textContent="Đã trả lời: "+d+" / 18 + 16 ý + 6 câu"}
 function tick(){var r=Math.max(0,Math.round((S.end-Date.now())/1000));$("tm").textContent="⏱ "+String(Math.floor(r/60)).padStart(2,"0")+":"+String(r%60).padStart(2,"0");$("bar").classList.toggle("warn",r<300);if(r<=0)finish()}
 $("sub").onclick=function(){confirmBox("Bạn chắc chắn muốn nộp bài?",finish)};
 function num(s){var t=String(s).replace(/%/g,"").replace(/\s/g,"").replace(",",".");return t===""?NaN:parseFloat(t)}
@@ -212,7 +222,7 @@ function finish(){
  // Ghi xuống máy trước, rồi mới gửi mạng: mất mạng không làm mất bài.
  var all=localResults();all.push(r);writeResults(all);sendResult(r);
  $("sc").textContent=tot.toFixed(2).replace(".",",")+" / 10";$("gr").textContent="Xếp loại: "+g;
- $("det").innerHTML="<p>Phần I: <b>"+d1+"/12</b> câu đúng ("+s1.toFixed(2)+" đ)</p><p>Phần II: đúng <b>"+d2.join(" và ")+"</b> ý ở mỗi câu ("+r.p2.toFixed(2)+" đ)</p><p>Phần III: <b>"+d3+"/4</b> câu đúng ("+s3.toFixed(2)+" đ)</p>";
+ $("det").innerHTML="<p>Phần I: <b>"+d1+"/18</b> câu đúng ("+s1.toFixed(2)+" đ)</p><p>Phần II: đúng <b>"+d2.join(" và ")+"</b> ý ở mỗi câu ("+r.p2.toFixed(2)+" đ)</p><p>Phần III: <b>"+d3+"/6</b> câu đúng ("+s3.toFixed(2)+" đ)</p>";
  S=null;show("res")}
 $("back").onclick=function(){$("nm").value="";$("cl").value="";show("home")};
 // ===== GIÁO VIÊN =====

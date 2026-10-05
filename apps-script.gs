@@ -4,7 +4,7 @@
  * chạy setup() một lần, sau đó Deploy > New deployment > Web app,
  * Execute as: Me; Who has access: Anyone.
  */
-var QUIZ_ID = 'hoa10-chuong1-cau-tao-nguyen-tu';
+var QUIZ_ID = 'hoa12-carbonyl-carboxylic-acid';
 var SHEET_NAME = 'Submissions';
 var HEADERS = ['id','quiz','name','className','score','grade','part1','part2','part3','submittedAt','submittedTs'];
 
